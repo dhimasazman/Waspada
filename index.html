@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WASPADA - Sistem Penanganan Pelanggaran WBP</title>
+  
+  <link rel="icon" type="image/png" href="logo1.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d2b45">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <div class="app-container">
+    <!-- Header Aplikasi Kedinasan -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-group">
+          <img src="logo1.png" alt="Logo Imipas" class="header-logo" onerror="this.style.display='none'">
+          <img src="logo2.png" alt="Logo Pemasyarakatan" class="header-logo" onerror="this.style.display='none'">
+        </div>
+        <div class="header-titles">
+          <h1>WASPADA</h1>
+          <p>Sistem Laporan Pelanggaran Tata Tertib & Penilaian Risiko WBP</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Ringkasan Alur / Tracker -->
+    <div class="summary-cards">
+      <div class="card-stat">
+        <span class="stat-label">Langkah Form</span>
+        <span class="stat-value" id="card-step-title">1. Identitas</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-label">Kategori</span>
+        <span class="stat-value" id="card-kategori-badge" style="font-size: 1rem;">-</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-label">Tingkat Risiko</span>
+        <span class="stat-value" id="card-risiko-badge" style="font-size: 1rem;">-</span>
+      </div>
+      <div class="card-stat">
+        <span class="stat-label">Status Alur</span>
+        <span class="stat-status" id="card-status-badge">Tahap 1 / 5</span>
+      </div>
+    </div>
+
+    <!-- Container Form Utama -->
+    <div class="main-card">
+      
+      <!-- Navigasi Tab -->
+      <nav class="tab-nav">
+        <button type="button" class="tab-btn active" data-tab="tab-1">1. Identitas</button>
+        <button type="button" class="tab-btn" data-tab="tab-2">2. Kronologi</button>
+        <button type="button" class="tab-btn" data-tab="tab-3">3. Pemeriksaan</button>
+        <button type="button" class="tab-btn" data-tab="tab-4">4. Penilaian Risiko</button>
+        <button type="button" class="tab-btn" data-tab="tab-5">5. Rekomendasi</button>
+      </nav>
+
+      <form id="waspadaForm">
+        
+        <!-- Tab 1: Awal & Identitas -->
+        <div id="tab-1" class="tab-content active">
+          <div class="sub-section">
+            <h4>Data Pelapor & Identitas WBP</h4>
+            <div class="form-grid-2">
+              <div class="form-group full-width">
+                <label for="emailPelapor">Email Pelapor / Petugas *</label>
+                <input type="email" id="emailPelapor" placeholder="contoh: petugas@gmail.com" required>
+              </div>
+              <div class="form-group">
+                <label for="namaWbp">Nama WBP (Pelanggar) *</label>
+                <input type="text" id="namaWbp" placeholder="Nama lengkap WBP" required>
+              </div>
+              <div class="form-group">
+                <label for="noReg">Nomor Registrasi WBP *</label>
+                <input type="text" id="noReg" placeholder="Nomor registrasi" required>
+              </div>
+              <div class="form-group">
+                <label for="kamarBlok">Kamar / Blok Hunian *</label>
+                <input type="text" id="kamarBlok" placeholder="Contoh: Blok A - Kamar 04" required>
+              </div>
+              <div class="form-group">
+                <label for="perkaraUtama">Jenis Perkara Utama *</label>
+                <input type="text" id="perkaraUtama" placeholder="Contoh: Narkotika / Pidum" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Observasi & Kronologi -->
+        <div id="tab-2" class="tab-content">
+          <div class="sub-section">
+            <h4>Detail Kejadian Pelanggaran</h4>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="tglWaktuKejadian">Tanggal & Waktu Kejadian *</label>
+                <input type="datetime-local" id="tglWaktuKejadian" required>
+              </div>
+              <div class="form-group">
+                <label for="lokasiKejadian">Lokasi Kejadian *</label>
+                <input type="text" id="lokasiKejadian" placeholder="Contoh: Lapangan Olahraga / Blok Hunian" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="kategoriPelanggaran">Kategori Dugaan Pelanggaran Tata Tertib *</label>
+                <select id="kategoriPelanggaran" required>
+                  <option value="">-- Pilih Kategori Pelanggaran --</option>
+                  <option value="Pelanggaran Ringan">Pelanggaran Ringan (Kelengkapan, Kerapihan, Dll)</option>
+                  <option value="Pelanggaran Sedang">Pelanggaran Sedang (Percekcokan, Kepemilikan Barang Terlarang Sederhana)</option>
+                  <option value="Pelanggaran Berat">Pelanggaran Berat (Narkoba, Handphone, Perkelahian, Pelarian)</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="kronologiKejadian">Uraian / Kronologi Kejadian *</label>
+                <textarea id="kronologiKejadian" rows="4" placeholder="Jelaskan secara rinci kronologi kejadian di lapangan..." required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Pemeriksaan (BAP) -->
+        <div id="tab-3" class="tab-content">
+          <div class="sub-section">
+            <h4>Berita Acara Pemeriksaan (BAP) Sederhana</h4>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="namaPemeriksa">Nama Petugas Pemeriksa *</label>
+                <input type="text" id="namaPemeriksa" placeholder="Nama petugas penindak" required>
+              </div>
+              <div class="form-group">
+                <label for="nipPemeriksa">NIP Petugas Pemeriksa</label>
+                <input type="text" id="nipPemeriksa" placeholder="NIP petugas">
+              </div>
+              <div class="form-group full-width">
+                <label for="keteranganWbp">Ringkasan Keterangan WBP (Pengakuan / Sanggahan) *</label>
+                <textarea id="keteranganWbp" rows="3" placeholder="Catat pengakuan atau sanggahan WBP saat diperiksa..." required></textarea>
+              </div>
+              <div class="form-group full-width">
+                <label for="barangBukti">Rincian Barang Bukti (Jika Ada)</label>
+                <textarea id="barangBukti" rows="2" placeholder="Contoh: 1 Unit HP Samsung, 1 Buah Senjata Tajam Rakitan, Nihil, dll."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Penilaian Risiko -->
+        <div id="tab-4" class="tab-content">
+          <div class="sub-section">
+            <h4>Evaluasi Risiko Kemanan & Pengulangan</h4>
+            <div class="form-grid-2">
+              <div class="form-group full-width">
+                <label for="tingkatRisiko">Tingkat Risiko Pelanggaran *</label>
+                <select id="tingkatRisiko" required>
+                  <option value="">-- Pilih Tingkat Risiko --</option>
+                  <option value="Rendah">Rendah (Dampak Keamanan Minimal)</option>
+                  <option value="Sedang">Sedang (Berpotensi Mengganggu Ketertiban Blok)</option>
+                  <option value="Tinggi">Tinggi (Mengancam Keselamatan Jiwa / Stabilitas Lapas)</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="potensiUlang">Skala Potensi Mengulangi Pelanggaran (Skala 1–5) *</label>
+                <input type="range" id="potensiUlang" min="1" max="5" value="1" step="1" style="width: 100%;">
+                <div class="range-labels">
+                  <span>1 (Sangat Kecil)</span>
+                  <span>2 (Kecil)</span>
+                  <span id="range-val-disp" style="font-weight: 700; color: #0d2b45;">Skala: 1</span>
+                  <span>4 (Tinggi)</span>
+                  <span>5 (Sangat Tinggi)</span>
+                </div>
+              </div>
+              <div class="form-group full-width">
+                <label for="catatanRisiko">Catatan Pertimbangan Risiko</label>
+                <textarea id="catatanRisiko" rows="2" placeholder="Catatan tambahan mengenai perilaku sehari-hari WBP..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Rekomendasi & Selesai -->
+        <div id="tab-5" class="tab-content">
+          <div class="sub-section">
+            <h4>Rekomendasi Tindakan & Sidang TPP</h4>
+            <div class="form-grid-2">
+              <div class="form-group full-width">
+                <label for="sanksiDisiplin">Jenis Rekomendasi Sanksi Disiplin *</label>
+                <select id="sanksiDisiplin" required>
+                  <option value="">-- Pilih Jenis Sanksi --</option>
+                  <option value="Teguran Lisan / Tulis">Teguran Lisan / Tulis</option>
+                  <option value="Pengasingan di Sel Tutup Sunyi">Pengasingan di Sel Tutup Sunyi (Strafcell)</option>
+                  <option value="Pencabutan Hak Remisi / Integrasi">Pencabutan Hak Remisi / Cuti / Integrasi</option>
+                  <option value="Lain-Lain">Lain-Lain</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="durasiHukuman">Rincian Durasi Hukuman *</label>
+                <input type="text" id="durasiHukuman" placeholder="Contoh: 6 Hari / 14 Hari" required>
+              </div>
+              <div class="form-group">
+                <label for="tglSidangTpp">Rencana Tanggal Sidang TPP *</label>
+                <input type="date" id="tglSidangTpp" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Navigasi Dinamis -->
+        <div class="form-actions-right">
+          <button type="button" id="btnPrev" class="btn btn-custom btn-secondary" style="display: none;">
+            ← Kembali
+          </button>
+          <button type="button" id="btnNext" class="btn btn-custom btn-primary">
+            Lanjutkan ➔
+          </button>
+          <button type="button" id="btnShareWa" class="btn btn-custom btn-wa" style="display: none;">
+            <span class="btn-icon">📲</span>
+            <span class="btn-text">Share ke WhatsApp</span>
+          </button>
+          <button type="button" id="btnSave" class="btn btn-custom btn-success" style="display: none;">
+            <span class="btn-icon">💾</span>
+            <span class="btn-text">Kirim & Simpan Data</span>
+          </button>
+          <button type="button" id="btnDownload" class="btn btn-custom btn-primary" style="display: none;">
+            <span class="btn-icon">🖼️</span>
+            <span class="btn-text">Unduh BAP Gambar</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Footer Web Form -->
+    <footer class="app-footer">
+      <p>© 2026 Tim Keamanan & Ketertiban Lapas Sumedang. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- TEMPLATE INFOGRAFIS/BAP UNTUK DIUNDUH SEBAGAI GAMBAR -->
+  <div id="capture-area-wrapper">
+    <div id="capture-area" class="infographic-container">
+      
+      <div class="info-header">
+        <div class="logo-group-info">
+          <img src="logo1.png" alt="Logo Imipas" class="info-logo" onerror="this.style.display='none'">
+          <img src="logo2.png" alt="Logo Pemasyarakatan" class="info-logo" onerror="this.style.display='none'">
+        </div>
+        <div class="header-text">
+          <h2>LAPORAN PENANGANAN PELANGGARAN WBP</h2>
+          <p>Sistem WASPADA — Direktorat Jenderal Pemasyarakatan</p>
+        </div>
+      </div>
+
+      <div class="info-date-bar">
+        📄 BERITA ACARA BAP / PEMERIKSAAN | Tanggal: <span id="out-tanggal">-</span>
+      </div>
+
+      <!-- Top Stats Grid -->
+      <div class="top-stats-grid">
+        <div class="stat-box">
+          <div class="stat-head">NAMA WBP</div>
+          <div class="stat-val" id="out-namaWbp">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-head">NO. REGISTRASI</div>
+          <div class="stat-val" id="out-noReg">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-head">BLOK / KAMAR</div>
+          <div class="stat-val" id="out-kamarBlok">-</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-head">TINGKAT RISIKO</div>
+          <div class="stat-val" id="out-tingkatRisiko">-</div>
+        </div>
+      </div>
+
+      <!-- Main Grid Body -->
+      <div class="info-body-grid">
+        <!-- Kolom Kiri -->
+        <div class="info-col">
+          <div class="card-box">
+            <div class="card-header">1. IDENTITAS & DATA PELAPOR</div>
+            <div class="card-body list-rows">
+              <div class="sub-row"><span>Email Pelapor</span><span>:</span><span id="out-emailPelapor" style="grid-column: 3 / span 2;">-</span></div>
+              <div class="sub-row"><span>Perkara Utama</span><span>:</span><span id="out-perkaraUtama" style="grid-column: 3 / span 2;">-</span></div>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-header">2. KRONOLOGI & PELANGGARAN</div>
+            <div class="card-body list-rows">
+              <div class="sub-row"><span>Waktu Kejadian</span><span>:</span><span id="out-tglKejadian" style="grid-column: 3 / span 2;">-</span></div>
+              <div class="sub-row"><span>Lokasi Kejadian</span><span>:</span><span id="out-lokasiKejadian" style="grid-column: 3 / span 2;">-</span></div>
+              <div class="sub-row"><span>Kategori</span><span>:</span><span id="out-kategoriPelanggaran" style="grid-column: 3 / span 2; font-weight:700;">-</span></div>
+              <div style="margin-top:6px; font-size:0.78rem;">
+                <strong>Uraian Kejadian:</strong>
+                <p id="out-kronologiKejadian" style="background:#f8fafc; padding:6px; border-radius:4px; margin-top:2px; border:1px solid #cbd5e1;">-</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-header">3. PEMERIKSAAN & BARANG BUKTI</div>
+            <div class="card-body list-rows">
+              <div class="sub-row"><span>Petugas Pemeriksa</span><span>:</span><span id="out-pemeriksa" style="grid-column: 3 / span 2;">-</span></div>
+              <div style="margin-top:6px; font-size:0.78rem;">
+                <strong>Keterangan / Pengakuan WBP:</strong>
+                <p id="out-keteranganWbp" style="background:#f8fafc; padding:6px; border-radius:4px; margin-top:2px; border:1px solid #cbd5e1;">-</p>
+              </div>
+              <div style="margin-top:6px; font-size:0.78rem;">
+                <strong>Barang Bukti:</strong>
+                <p id="out-barangBukti" style="background:#f8fafc; padding:6px; border-radius:4px; margin-top:2px; border:1px solid #cbd5e1;">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan -->
+        <div class="info-col">
+          <div class="card-box">
+            <div class="card-header">4. EVALUASI & RISIKO</div>
+            <div class="card-body list-rows">
+              <div class="sub-row"><span>Tingkat Risiko</span><span>:</span><span id="out-tingkatRisiko2" style="grid-column: 3 / span 2; font-weight:700;">-</span></div>
+              <div class="sub-row"><span>Potensi Mengulangi</span><span>:</span><span id="out-potensiUlang" style="grid-column: 3 / span 2; font-weight:700;">Skala -</span></div>
+              <div style="margin-top:6px; font-size:0.78rem;">
+                <strong>Catatan Pertimbangan:</strong>
+                <p id="out-catatanRisiko" style="background:#f8fafc; padding:6px; border-radius:4px; margin-top:2px; border:1px solid #cbd5e1;">-</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-box">
+            <div class="card-header">5. REKOMENDASI SANKSI & TPP</div>
+            <div class="card-body list-rows">
+              <div class="sub-row"><span>Rekomendasi Sanksi</span><span>:</span><span id="out-sanksiDisiplin" style="grid-column: 3 / span 2; font-weight:700;">-</span></div>
+              <div class="sub-row"><span>Durasi Hukuman</span><span>:</span><span id="out-durasiHukuman" style="grid-column: 3 / span 2;">-</span></div>
+              <div class="sub-row"><span>Tanggal Sidang TPP</span><span>:</span><span id="out-tglSidangTpp" style="grid-column: 3 / span 2; font-weight:700;">-</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-footer">
+        <p><strong>Lapas Sumedang</strong></p>
+        <p>Tertib - Agamis - Humanis - Unggul</p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
