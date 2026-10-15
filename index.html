@@ -30,6 +30,7 @@
           <p>Sistem Laporan Pelanggaran Tata Tertib & Penilaian Risiko WBP</p>
         </div>
       </div>
+      <button type="button" id="themeToggle" class="theme-toggle" aria-label="Ganti tema">🌙</button>
     </header>
 
     <!-- Ringkasan Alur / Tracker -->
@@ -56,6 +57,7 @@
     <div class="main-card">
       
       <!-- Navigasi Tab -->
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       <nav class="tab-nav">
         <button type="button" class="tab-btn active" data-tab="tab-1">1. Identitas</button>
         <button type="button" class="tab-btn" data-tab="tab-2">2. Kronologi</button>
@@ -354,6 +356,21 @@
     </div>
   </div>
 
+  <button type="button" id="btnPreview" class="fab">👁️ Pratinjau BAP</button>
+  <div id="previewModal" class="modal">
+    <div class="modal-box">
+      <div class="modal-head"><span>Pratinjau BAP</span><button type="button" id="previewClose" class="modal-close" aria-label="Tutup">✕</button></div>
+      <div class="modal-body">
+        <div id="preview-stage"></div>
+        <div class="modal-actions">
+          <button type="button" id="pvDownload" class="btn-custom">🖼️ Unduh Gambar</button>
+          <button type="button" id="pvShare" class="btn-custom btn-wa">📲 Share ke WA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
+  <script src="ui.js"></script>
 </body>
 </html>
